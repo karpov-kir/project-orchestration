@@ -1,0 +1,9 @@
+.idea
+node_modules
+build
+
+*.orig
+*.DS_Store
+npm-debug.log*
+
+.vercel
