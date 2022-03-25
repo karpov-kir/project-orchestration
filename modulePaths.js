@@ -6,6 +6,7 @@ const preparedModulesPath = path.join(__dirname, 'preparedModules');
 const modulesPath = path.join(__dirname, 'modules');
 const modules = [
   {
+    name: 'mi-q',
     packageManager: 'npm',
     gitBranch: 'master',
     modulePath: path.join(modulesPath, 'mi-q'),
@@ -17,6 +18,7 @@ const modules = [
     ],
   },
   {
+    name: 'guessir',
     packageManager: 'npm',
     gitBranch: 'master',
     modulePath: path.join(modulesPath, 'guessir'),
@@ -25,13 +27,10 @@ const modules = [
         moduleTakeawayPath: path.join(modulesPath, 'guessir/packages/web/build'),
         localPreparedModuleFolderName: 'guessir-web-build',
       },
-      {
-        moduleTakeawayPath: path.join(modulesPath, 'guessir/packages/backend'),
-        localPreparedModuleFolderName: 'guessir-backend-package',
-      },
     ],
   },
   {
+    name: 'mindy',
     packageManager: 'npm',
     gitBranch: 'master',
     modulePath: path.join(modulesPath, 'mindy'),
@@ -43,6 +42,7 @@ const modules = [
     ],
   },
   {
+    name: 'monorepo-spa',
     packageManager: 'yarn',
     gitBranch: 'development',
     modulePath: path.join(modulesPath, 'monorepo-spa'),
@@ -63,8 +63,22 @@ const modules = [
   },
 ];
 
+const filterModulesByName = (name) => modules.filter(({ name: nameToCheck }) => name === nameToCheck);
+
+const getModulesFilteredByNameFromCli = () => {
+  const moduleName = process.argv[2];
+
+  if (!moduleName) {
+    return modules;
+  }
+
+  return filterModulesByName(moduleName);
+};
+
 module.exports = {
   preparedModulesPath,
   modules,
   modulesPath,
+  filterModulesByName,
+  getModulesFilteredByNameFromCli,
 };

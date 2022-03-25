@@ -4,23 +4,15 @@
     "build": "npm run clean && tsc -p tsconfig.json",
     "build:vercel": "echo 'Using pre-build version from ./build'",
     "clean": "rimraf ./build",
-    "modules:prepare": "npm run modules:update && node ./modulesPrepare.js",
+    "modules:prepare": "node ./modulesPrepare.js",
     "modules:update": "node ./modulesUpdate.js",
     "start": "node ./build/index.js",
     "start:ts": "ts-node ./src/index.ts"
   },
   "dependencies": {
-    "@guessir/backend": "./modules/guessir/packages/backend",
-    "express": "^4.17.3",
-    "express-subdomain": "^1.0.5",
-    "http-proxy": "^1.18.1",
-    "morgan": "^1.10.0"
+    "@guessir/backend": "./modules/guessir/packages/backend"
   },
   "devDependencies": {
-    "@types/express": "^4.17.13",
-    "@types/http-proxy": "^1.17.8",
-    "@types/morgan": "^1.9.3",
-    "@types/node": "^17.0.21",
     "@typescript-eslint/eslint-plugin": "^5.15.0",
     "@typescript-eslint/parser": "^5.15.0",
     "cross-spawn": "^7.0.3",

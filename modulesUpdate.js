@@ -2,9 +2,9 @@
 
 const { execFileSync } = require('child_process');
 
-const { modules } = require('./modulePaths');
+const { getModulesFilteredByNameFromCli } = require('./modulePaths');
 
-modules.forEach((module) => {
+getModulesFilteredByNameFromCli().forEach((module) => {
   updateModule(module);
 });
 
@@ -17,3 +17,7 @@ function updateModule({ modulePath, gitBranch }) {
   execFileSync('git', ['reset', '--hard', `origin/${gitBranch}`], { stdio: 'inherit', cwd: modulePath });
   execFileSync('git', ['clean', '-fd'], { stdio: 'inherit', cwd: modulePath });
 }
+
+module.exports = {
+  updateModule,
+};

@@ -4,9 +4,10 @@ const { sync: spawnSync } = require('cross-spawn');
 const fse = require('fs-extra');
 const path = require('path');
 
-const { preparedModulesPath, modules } = require('./modulePaths');
+const { preparedModulesPath, getModulesFilteredByNameFromCli } = require('./modulePaths');
 
-modules.forEach((module) => {
+require('./modulesUpdate');
+getModulesFilteredByNameFromCli().forEach((module) => {
   prepareModule(module);
 });
 
