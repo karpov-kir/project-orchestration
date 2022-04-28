@@ -27,6 +27,10 @@ const modules = [
         moduleTakeawayPath: path.join(modulesPath, 'guessir/packages/web/build'),
         localPreparedModuleFolderName: 'guessir-web-build',
       },
+      {
+        moduleTakeawayPath: path.join(modulesPath, 'guessir/packages/backend/build'),
+        localPreparedModuleFolderName: 'guessir-backend-build',
+      },
     ],
   },
   {

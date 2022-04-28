@@ -5,8 +5,8 @@ After=network.target
 
 [Service]
 User=admin
-WorkingDirectory=/home/admin/k-k.io/node_modules/@guessir/backend
-ExecStart=/usr/local/bin/npm run start:ts
+WorkingDirectory=/home/admin/k-k.io/preparedModules/guessir-backend-build
+ExecStart=/usr/local/bin/node index.js
 Restart=on-failure
 # The app won't try and fork itself to drop user privileges or anything like that
 Type=simple

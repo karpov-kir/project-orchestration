@@ -59,6 +59,7 @@ At least the following configuration is required:
     - `sudo ufw allow 'Nginx Full'`
     - `sudo ufw allow 'OpenSSH'`
     - `sudo ufw enable`
+- TODO migrate to the user scope
 - Configure `systemctl` to start the backend services
   - Move the unit into `systemd` folder `sudo cp /home/admin/k-k.io/guessir.service /etc/systemd/system`
   - Start the service `sudo systemctl start guessir.service`
