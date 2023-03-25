@@ -58,6 +58,11 @@ Use the `admin` user for all later steps.
   - `sudo apt install nginx`
   - Add the Nginx config to the enabled sites
     - `sudo ln -s /home/admin/k-k.io/nginx-k-k.io.conf /etc/nginx/sites-enabled/`
+  - Move static to the `www-data` user folder and make it available for Nginx
+    - `sudo mkdir -m 755 -p /home/www-data`
+    - `sudo chown -R www-data:www-data /home/www-data`
+    - `sudo cp -r /home/admin/k-k.io /home/www-data`
+    - `sudo chown -R www-data:www-data /home/www-data/k-k.io`
   - Reload Nginx `sudo nginx -s reload`
 - Install PostgresSQL `sudo apt install postgresql postgresql-contrib pgcli`
   - Create an admin user `cd /home && sudo -u postgres createuser admin`
@@ -102,6 +107,7 @@ Use the `admin` user for all later steps.
   - `cd ~/k-k.io`
   - `git submodule update --init`
   - `git pull && npm run modules:update && npm ci`
+  - `sudo rm -rf /home/www-data/k-k.io && sudo cp -r /home/admin/k-k.io /home/www-data && sudo chown -R www-data:www-data /home/www-data/k-k.io`
 - Restart the backend services `sudo systemctl restart guessir.service`
 
 ## Useful commands
