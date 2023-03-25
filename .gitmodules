@@ -1,6 +1,3 @@
-[submodule "modules/monorepo-spa"]
-	path = modules/monorepo-spa
-	url = https://github.com/karpov-kir/monorepo-spa.git
 [submodule "modules/mi-q"]
 	path = modules/mi-q
 	url = https://github.com/karpov-kir/mi-q.git

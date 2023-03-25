@@ -45,26 +45,6 @@ const modules = [
       },
     ],
   },
-  {
-    name: 'monorepo-spa',
-    packageManager: 'yarn',
-    gitBranch: 'development',
-    modulePath: path.join(modulesPath, 'monorepo-spa'),
-    preparedModuleFolders: [
-      {
-        moduleTakeawayPath: path.join(modulesPath, 'monorepo-spa/packages/@af-web/spa/build/webpack'),
-        localPreparedModuleFolderName: 'monorepo-spa-build',
-      },
-      {
-        moduleTakeawayPath: path.join(modulesPath, 'monorepo-spa/packages/@af-web/spa/build/storybook'),
-        localPreparedModuleFolderName: 'monorepo-spa-sb-build',
-      },
-      {
-        moduleTakeawayPath: path.join(modulesPath, 'monorepo-spa/packages/@af-web/ui/build/storybook'),
-        localPreparedModuleFolderName: 'monorepo-spa-ui-sb-build',
-      },
-    ],
-  },
 ];
 
 const filterModulesByName = (name) => modules.filter(({ name: nameToCheck }) => name === nameToCheck);

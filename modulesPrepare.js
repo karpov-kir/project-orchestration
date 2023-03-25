@@ -27,7 +27,6 @@ function prepareModule({ modulePath, preparedModuleFolders, packageManager }) {
       // Disable it as react-scripts inbuilt eslint conflicts with eslint in the current GIT repo and
       // throws some errors.
       DISABLE_ESLINT_PLUGIN: true,
-      // Switch some custom webpack builders to the production mode (e.g. in monorepo-spa)
       NODE_ENV: 'production',
     },
   });
