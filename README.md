@@ -99,8 +99,9 @@ Use the `admin` user for all later steps.
   - Push the new changes
   - You can use `npm run modules:prepare guessir && npm install` to prepare only a specific module
 - On the server execute 
+  - `cd ~/k-k.io`
   - `git submodule update --init`
-  - `cd ~/k-k.io && git pull && npm run modules:update && npm ci`
+  - `git pull && npm run modules:update && npm ci`
 - Restart the backend services `sudo systemctl restart guessir.service`
 
 ## Useful commands
