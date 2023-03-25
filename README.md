@@ -92,9 +92,15 @@ Use the `admin` user for all later steps.
 ## How to redeploy
 
 - Make changes in a source repo of a project, commit and push the changes
-- On your local machine open this repo end execute `npm run modules:prepare && npm install` and push the new changes
+- On your local machine open this repo
+  - Execute
+    - `git submodule update --init`
+    - `npm run modules:prepare && npm install`
+  - Push the new changes
   - You can use `npm run modules:prepare guessir && npm install` to prepare only a specific module
-- On the server execute `cd ~/k-k.io && git pull && npm run modules:update && npm ci`
+- On the server execute 
+  - `git submodule update --init`
+  - `cd ~/k-k.io && git pull && npm run modules:update && npm ci`
 - Restart the backend services `sudo systemctl restart guessir.service`
 
 ## Useful commands
