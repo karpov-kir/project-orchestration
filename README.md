@@ -21,33 +21,57 @@ At least the following configuration is required:
 
 - Get an Ubuntu server
 - Connect via SSH
-- Disable SSH password authentication
-  - `sudo nano /etc/ssh/sshd_config`, make sure that this is set `PasswordAuthentication no`
+
+Use the `root` user for the following steps.
+
+- Add an `admin` user
+  - `adduser admin`
+  - Setup SSH access
+    - `mkdir 700 -p /home/admin/.ssh/`
+    - `echo "<publicSshKey>" >> /home/admin/.ssh/authorized_keys`
+    - `chmod 600 /home/admin/.ssh/authorized_keys`
+    - `chown -R admin:admin /home/admin/.ssh`
+    - Add or extend `AllowUsers` to include the `admin` user (`AllowUsers root admin`)
+      - `nano /etc/ssh/sshd_config`
+      - `systemctl restart sshd`
+  - Disable SSH password authentication
+    - `nano /etc/ssh/sshd_config`, make sure that this is set `PasswordAuthentication no`
+  - `systemctl restart sshd`
+  - Allow `sudo` access
+    - `usermod -aG sudo admin`
+
+Use the `admin` user for all later steps.
+
+- Upgrade `sudo apt update && apt upgrade`
 - Install GIT `sudo apt install git`
   - Clone this repo to a folder including the submodules `cd ~ && git clone --recursive https://github.com/karpov-kir/k-k.io.git`
-- Install Node.js, NPM `sudo apt install nodejs npm`, reload ENV variables `hash -r`
-  - Install `n` package to switch Node.js versions `sudo npm install n -g`
-  - Switch to Node.js 17 version `sudo n 17`
+- Install NVM
+  - `curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash`, reload `.bashrc` settings `source ~/.bashrc`
+- Install Node.js, NPM 
+  - `nvm install 17`
+- Get `k-k.io` static ready
   - Install packages `cd ~/k-k.io && npm ci`
-  - There are already prepared (built) projects in `k-k.io/preparedModules`, so they can be served / started without
+  - The projects are built already in `k-k.io/preparedModules`, so they can be served / started without
     building (check `nginx-k-k.io.conf` for a reference). The projects are built locally as the server might be
     limited in resources.
 - Install Nginx
-  - Add the Nginx config to the enabled sites `sudo ln -s /home/admin/k-k.io/nginx-k-k.io.conf /etc/nginx/sites-enabled/`
+  - `sudo apt install nginx`
+  - Add the Nginx config to the enabled sites
+    - `sudo ln -s /home/admin/k-k.io/nginx-k-k.io.conf /etc/nginx/sites-enabled/`
   - Reload Nginx `sudo nginx -s reload`
 - Install PostgresSQL `sudo apt install postgresql postgresql-contrib pgcli`
-  - Create an admin user `sudo -u postgres createuser admin`
+  - Create an admin user `cd /home && sudo -u postgres createuser admin`
   - Create DBs
     - `sudo -u postgres createdb guessir`
     - `sudo -u postgres createdb sonarqube`
   - Set the user's password `sudo -u postgres pgcli`, `ALTER ROLE admin WITH PASSWORD 'admin';`
 - Install Docker
   - Follow steps in https://docs.docker.com/engine/install/ubuntu
-  - Add the user to the Docker group to allow using it without sudo `sudo usermod -aG docker $USER`
+  - Add the `admin` user to the Docker group to allow using it without sudo `sudo usermod -aG docker admin`
     - Close console and connect again
 - Install and start SonarQube
   - Extend `vm.max_map_count` as it is required to start SonarQube
-    - `sudo nano /etc/sysctl.conf` and add / update `vm.ma_map_count` entry to be `vm.max_map_count=262144`
+    - `sudo sysctl -w vm.max_map_count=262144`
     - `sudo sysctl -p`
   - `docker run -d --name sonarqube --restart always --net=host -e SONARQUBE_JDBC_USERNAME=admin -e SONARQUBE_JDBC_PASSWORD=admin -e SONARQUBE_JDBC_URL=jdbc:postgresql://127.0.0.1:5432/sonarqube mc1arke/sonarqube-with-community-branch-plugin`
     - The argument `--restart always` tells Docker to start the container when the machine boots or if the container fails
@@ -59,12 +83,11 @@ At least the following configuration is required:
     - `sudo ufw allow 'Nginx Full'`
     - `sudo ufw allow 'OpenSSH'`
     - `sudo ufw enable`
-- TODO migrate to the user scope
-- Configure `systemctl` to start the backend services
-  - Move the unit into `systemd` folder `sudo cp /home/admin/k-k.io/guessir.service /etc/systemd/system`
-  - Start the service `sudo systemctl start guessir.service`
-  - Check that it's running `sudo journalctl -f -u guessir.service`
-  - Start the unit when the machine boots `sudo systemctl enable guessir.service`
+- Configure `systemctl` to start the GuesSir backend services
+  - Move the unit into `systemd` folder `mkdir 755 -p ~/.config/systemd/user && cp /home/admin/k-k.io/guessir.service ~/.config/systemd/user`
+  - Start the service `systemctl --user start guessir.service`
+  - Check that it's running `journalctl --user -f -u guessir.service`
+  - Start the unit when the machine boots `systemctl --user enable guessir.service`
 
 ## How to redeploy
 
