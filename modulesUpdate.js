@@ -13,7 +13,7 @@ function updateModule({ modulePath, gitBranch }) {
 
   execFileSync('git', ['fetch', '--all'], { stdio: 'inherit', cwd: modulePath });
 
-  console.log('Switching to the latest commit on the master branch in', modulePath);
+  console.log(`Switching to the latest commit on the ${gitBranch} branch in`, modulePath);
   execFileSync('git', ['reset', '--hard', `origin/${gitBranch}`], { stdio: 'inherit', cwd: modulePath });
   execFileSync('git', ['clean', '-fd'], { stdio: 'inherit', cwd: modulePath });
 }

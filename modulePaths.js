@@ -8,7 +8,7 @@ const modules = [
   {
     name: 'mi-q',
     packageManager: 'npm',
-    gitBranch: 'master',
+    gitBranch: 'main',
     modulePath: path.join(modulesPath, 'mi-q'),
     preparedModuleFolders: [
       {
@@ -20,7 +20,7 @@ const modules = [
   {
     name: 'guessir',
     packageManager: 'npm',
-    gitBranch: 'master',
+    gitBranch: 'main',
     modulePath: path.join(modulesPath, 'guessir'),
     preparedModuleFolders: [
       {
@@ -36,7 +36,7 @@ const modules = [
   {
     name: 'mindy',
     packageManager: 'npm',
-    gitBranch: 'master',
+    gitBranch: 'main',
     modulePath: path.join(modulesPath, 'mindy'),
     preparedModuleFolders: [
       {
