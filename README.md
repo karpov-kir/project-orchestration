@@ -48,7 +48,7 @@ Use the `admin` user for all later steps.
 - Install NVM
   - `curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash`, reload `.bashrc` settings `source ~/.bashrc`
 - Install Node.js, NPM 
-  - `nvm install 17`
+  - `nvm install 19`
 - Get `k-k.io` static ready
   - Install packages `cd ~/k-k.io && npm ci`
   - The projects are built already in `k-k.io/preparedModules`, so they can be served / started without
@@ -108,12 +108,12 @@ Use the `admin` user for all later steps.
   - `git submodule update --init`
   - `git pull && npm run modules:update && npm ci`
   - `sudo rm -rf /home/www-data/k-k.io && sudo cp -r /home/admin/k-k.io /home/www-data && sudo chown -R www-data:www-data /home/www-data/k-k.io`
-- Restart the backend services `sudo systemctl restart guessir.service`
+- Restart the backend services `systemctl --user restart guessir.service && journalctl --user -f -u guessir.service`
 
 ## Useful commands
 
-- Check logs of a service `sudo journalctl -f -u guessir.service`
-- Restart a service `sudo systemctl restart guessir.service`
-- Start / stop a service `sudo systemctl stop guessir.service`, `sudo systemctl start guessir.service`
-- Check a service's status `sudo systemctl status guessir.service`
+- Check logs of a service `journalctl --user -f -u guessir.service`
+- Restart a service `systemctl --user restart guessir.service`
+- Start / stop a service `systemctl --user stop guessir.service`, `sudo systemctl start guessir.service`
+- Check a service's status `systemctl --user status guessir.service`
 - Connect to PGCLI `pgcli -d guessir`

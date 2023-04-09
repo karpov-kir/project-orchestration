@@ -24,12 +24,12 @@ const modules = [
     modulePath: path.join(modulesPath, 'guessir'),
     preparedModuleFolders: [
       {
-        moduleTakeawayPath: path.join(modulesPath, 'guessir/packages/web/build'),
-        localPreparedModuleFolderName: 'guessir-web-build',
+        moduleTakeawayPath: path.join(modulesPath, 'guessir/packages/web/dist'),
+        localPreparedModuleFolderName: 'guessir-web-dist',
       },
       {
-        moduleTakeawayPath: path.join(modulesPath, 'guessir/packages/backend/build'),
-        localPreparedModuleFolderName: 'guessir-backend-build',
+        moduleTakeawayPath: path.join(modulesPath, 'guessir/packages/backend/dist'),
+        localPreparedModuleFolderName: 'guessir-backend-dist',
       },
     ],
   },

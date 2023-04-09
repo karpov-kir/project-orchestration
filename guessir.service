@@ -4,15 +4,15 @@ Description=Guessir
 After=network.target
 
 [Service]
-WorkingDirectory=/home/admin/k-k.io/preparedModules/guessir-backend-build
-ExecStart=/home/admin/.nvm/nvm-exec node index.js
+WorkingDirectory=/home/admin/k-k.io/preparedModules/guessir-backend-dist
+ExecStart=/home/admin/.nvm/nvm-exec node main.js
 Restart=on-failure
 # The app won't try and fork itself to drop user privileges or anything like that
 Type=simple
 
 Environment=NODE_ENV=production
 # Used by `nvm-exec`
-Environment=NODE_VERSION=17
+Environment=NODE_VERSION=19
 
 Environment=PORT=3020
 Environment=HOST=127.0.0.1
