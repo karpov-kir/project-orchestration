@@ -49,6 +49,7 @@ Use the `admin` user for all later steps.
   - `curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash`, reload `.bashrc` settings `source ~/.bashrc`
 - Install Node.js, NPM 
   - `nvm install 19`
+  - `npm i extensionless -g`
 - Get `k-k.io` static ready
   - Install packages `cd ~/k-k.io && npm ci`
   - The projects are built already in `k-k.io/preparedModules`, so they can be served / started without

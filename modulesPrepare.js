@@ -1,12 +1,11 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
+import './modulesUpdate';
 
-const { sync: spawnSync } = require('cross-spawn');
-const fse = require('fs-extra');
-const path = require('path');
+import { sync as spawnSync } from 'cross-spawn';
+import fse from 'fs-extra';
+import path from 'path';
 
-const { preparedModulesPath, getModulesFilteredByNameFromCli } = require('./modulePaths');
+import { getModulesFilteredByNameFromCli, preparedModulesPath } from './modulePaths';
 
-require('./modulesUpdate');
 getModulesFilteredByNameFromCli().forEach((module) => {
   prepareModule(module);
 });

@@ -1,14 +1,12 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
+import { execFileSync } from 'child_process';
 
-const { execFileSync } = require('child_process');
-
-const { getModulesFilteredByNameFromCli } = require('./modulePaths');
+import { getModulesFilteredByNameFromCli } from './modulePaths';
 
 getModulesFilteredByNameFromCli().forEach((module) => {
   updateModule(module);
 });
 
-function updateModule({ modulePath, gitBranch }) {
+export function updateModule({ modulePath, gitBranch }) {
   console.log('Updating a module', modulePath);
 
   execFileSync('git', ['fetch', '--all'], { stdio: 'inherit', cwd: modulePath });
@@ -17,7 +15,3 @@ function updateModule({ modulePath, gitBranch }) {
   execFileSync('git', ['reset', '--hard', `origin/${gitBranch}`], { stdio: 'inherit', cwd: modulePath });
   execFileSync('git', ['clean', '-fd'], { stdio: 'inherit', cwd: modulePath });
 }
-
-module.exports = {
-  updateModule,
-};

@@ -1,10 +1,12 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-const path = require('path');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-const preparedModulesPath = path.join(__dirname, 'preparedModules');
-const modulesPath = path.join(__dirname, 'modules');
-const modules = [
+export const preparedModulesPath = path.join(__dirname, 'preparedModules');
+export const modulesPath = path.join(__dirname, 'modules');
+export const modules = [
   {
     name: 'mi-q',
     packageManager: 'npm',
@@ -47,9 +49,9 @@ const modules = [
   },
 ];
 
-const filterModulesByName = (name) => modules.filter(({ name: nameToCheck }) => name === nameToCheck);
+export const filterModulesByName = (name) => modules.filter(({ name: nameToCheck }) => name === nameToCheck);
 
-const getModulesFilteredByNameFromCli = () => {
+export const getModulesFilteredByNameFromCli = () => {
   const moduleName = process.argv[2];
 
   if (!moduleName) {
@@ -57,12 +59,4 @@ const getModulesFilteredByNameFromCli = () => {
   }
 
   return filterModulesByName(moduleName);
-};
-
-module.exports = {
-  preparedModulesPath,
-  modules,
-  modulesPath,
-  filterModulesByName,
-  getModulesFilteredByNameFromCli,
 };
