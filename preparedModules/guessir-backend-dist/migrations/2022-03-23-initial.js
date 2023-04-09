@@ -1,4 +1,4 @@
-const up = async ({ context: { query } }) => {
+export const up = async ({ context: { query } }) => {
     await query(`
     CREATE TABLE IF NOT EXISTS texts (
       pk SERIAL PRIMARY KEY,
@@ -14,9 +14,7 @@ const up = async ({ context: { query } }) => {
   `);
     await query(`CREATE UNIQUE INDEX id_idx ON texts (id)`);
 };
-const down = async () => {
+export const down = async () => {
     // No down migration
 };
-module.exports = { up, down };
-export {};
 //# sourceMappingURL=2022-03-23-initial.js.map
