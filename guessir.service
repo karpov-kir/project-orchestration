@@ -6,7 +6,8 @@ After=network.target
 [Service]
 WorkingDirectory=/home/admin/k-k.io/preparedModules/guessir-backend-dist
 ExecStart=/home/admin/.nvm/nvm-exec node --experimental-loader=extensionless main.js
-Restart=on-failure
+Restart=always
+RestartSec=5s
 # The app won't try and fork itself to drop user privileges or anything like that
 Type=simple
 
@@ -25,4 +26,4 @@ Environment=DB_HOST=127.0.0.1
 Environment=DB_PORT=5432
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target

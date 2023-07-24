@@ -93,7 +93,9 @@ Use the `admin` user for all later steps.
   - Move the unit into `systemd` folder `mkdir -m 755 -p ~/.config/systemd/user && cp /home/admin/k-k.io/guessir.service ~/.config/systemd/user`
   - Start the service `systemctl --user start guessir.service`
   - Check that it's running `journalctl --user -f -u guessir.service`
-  - Start the unit when the machine boots `systemctl --user enable guessir.service`
+  - Start the unit when the machine boots:
+    - `systemctl --user enable guessir.service`
+    - `loginctl enable-linger admin`
 
 ## How to redeploy
 
