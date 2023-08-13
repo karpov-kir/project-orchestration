@@ -1,0 +1,18 @@
+[Unit]
+Description=k-k-io
+# If the app starts when the machine boots up, it should wait until after the main networking functionality of the server is online
+After=network.target
+
+[Service]
+ExecStart=docker run -p 3000:3000 k-k-io
+Restart=always
+RestartSec=5s
+# The app won't try and fork itself to drop user privileges or anything like that
+Type=simple
+
+Environment=NODE_ENV=production
+# Used by `nvm-exec`
+Environment=NODE_VERSION=19
+
+[Install]
+WantedBy=default.target

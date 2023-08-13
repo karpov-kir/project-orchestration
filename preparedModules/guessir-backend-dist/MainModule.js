@@ -6,10 +6,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { TextsController } from './conrollers/TextsController';
+import { TextsController } from './controllers/TextsController';
 import { applyDbMigrations, getTypeOrmConfig, isDbEnabled } from './dbUtils';
 import { TextEntity } from './entities/TextEntity';
-let MainModule = class MainModule {
+export let MainModule = class MainModule {
     async onApplicationBootstrap() {
         if (isDbEnabled()) {
             await applyDbMigrations();
@@ -23,7 +23,6 @@ MainModule = __decorate([
         providers: [],
     })
 ], MainModule);
-export { MainModule };
 function getTypeOrmModule() {
     const config = getTypeOrmConfig();
     const { entities } = config;

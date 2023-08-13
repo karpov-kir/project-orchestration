@@ -3,6 +3,10 @@ import { execFileSync } from 'child_process';
 import { getModulesFilteredByNameFromCli } from './modulePaths';
 
 getModulesFilteredByNameFromCli().forEach((module) => {
+  if (!module.updatable) {
+    console.log(`Skipping update of ${module.name} module because it is not updatable`);
+    return;
+  }
   updateModule(module);
 });
 

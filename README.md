@@ -89,12 +89,21 @@ Use the `admin` user for all later steps.
     - `sudo ufw allow 'Nginx Full'`
     - `sudo ufw allow 'OpenSSH'`
     - `sudo ufw enable`
-- Configure `systemctl` to start the GuesSir backend services
-  - Move the unit into `systemd` folder `mkdir -m 755 -p ~/.config/systemd/user && cp /home/admin/k-k.io/guessir.service ~/.config/systemd/user`
-  - Start the service `systemctl --user start guessir.service`
-  - Check that it's running `journalctl --user -f -u guessir.service`
+- Configure `systemctl` to start the backend services
+  - Move the unit into the `systemd` folder
+    - `mkdir -m 755 -p ~/.config/systemd/user`
+    - `cp /home/admin/k-k.io/guessir.service ~/.config/systemd/user`
+    - `cp /home/admin/k-k.io/k-k-io.service ~/.config/systemd/user`
+    - `cp /home/admin/k-k.io/olga-k-k-io.service ~/.config/systemd/user`
+  - Start the services
+    - `systemctl --user start guessir.service`
+    - `systemctl --user start k-k-io.service`
+    - `systemctl --user start olga-k-k-io.service`
+  - To check if a service is running use `journalctl --user -f -u guessir.service`
   - Start the unit when the machine boots:
     - `systemctl --user enable guessir.service`
+    - `systemctl --user enable k-k-io.service`
+    - `systemctl --user enable olga-k-k-io.service`
     - `loginctl enable-linger admin`
 
 ## How to redeploy
@@ -110,8 +119,13 @@ Use the `admin` user for all later steps.
   - `cd ~/k-k.io`
   - `git submodule update --init`
   - `git pull && npm run modules:update && npm ci`
-  - `sudo rm -rf /home/www-data/k-k.io && sudo cp -r /home/admin/k-k.io /home/www-data && sudo chown -R www-data:www-data /home/www-data/k-k.io`
-- Restart the backend services `systemctl --user restart guessir.service && journalctl --user -f -u guessir.service`
+- Rebuild Docker images
+  - `(cd modules/k-k-io && npm run build:docker)`
+  - `(cd modules/olga-k-k-io && npm run build:docker)`
+- Restart the backend services
+  - `systemctl --user restart guessir.service`
+  - `systemctl --user restart k-k-io.service`
+  - `systemctl --user restart olga-k-k-io.service`
 
 ## Useful commands
 

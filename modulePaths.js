@@ -8,20 +8,9 @@ export const preparedModulesPath = path.join(__dirname, 'preparedModules');
 export const modulesPath = path.join(__dirname, 'modules');
 export const modules = [
   {
-    name: 'mi-q',
-    packageManager: 'npm',
-    gitBranch: 'main',
-    modulePath: path.join(modulesPath, 'mi-q'),
-    preparedModuleFolders: [
-      {
-        moduleTakeawayPath: path.join(modulesPath, '/mi-q/build'),
-        localPreparedModuleFolderName: 'mi-q-build',
-      },
-    ],
-  },
-  {
     name: 'guessir',
     packageManager: 'npm',
+    updatable: true,
     gitBranch: 'main',
     modulePath: path.join(modulesPath, 'guessir'),
     preparedModuleFolders: [
@@ -34,19 +23,7 @@ export const modules = [
         localPreparedModuleFolderName: 'guessir-backend-dist',
       },
     ],
-  },
-  {
-    name: 'mindy',
-    packageManager: 'npm',
-    gitBranch: 'main',
-    modulePath: path.join(modulesPath, 'mindy'),
-    preparedModuleFolders: [
-      {
-        moduleTakeawayPath: path.join(modulesPath, 'mindy/build'),
-        localPreparedModuleFolderName: 'mindy-build',
-      },
-    ],
-  },
+  }
 ];
 
 export const filterModulesByName = (name) => modules.filter(({ name: nameToCheck }) => name === nameToCheck);

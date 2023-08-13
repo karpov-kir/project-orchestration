@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 import { Exclude } from 'class-transformer';
 import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-let TextEntity = class TextEntity {
+export let TextEntity = class TextEntity {
     pk;
     id;
     title;
@@ -70,5 +70,4 @@ __decorate([
 TextEntity = __decorate([
     Entity('texts')
 ], TextEntity);
-export { TextEntity };
 //# sourceMappingURL=TextEntity.js.map

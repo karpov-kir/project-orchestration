@@ -1,9 +1,3 @@
-[submodule "modules/mi-q"]
-	path = modules/mi-q
-	url = https://github.com/karpov-kir/mi-q.git
 [submodule "modules/guessir"]
 	path = modules/guessir
 	url = https://github.com/karpov-kir/guessir.git
-[submodule "modules/midny"]
-	path = modules/mindy
-	url = https://github.com/karpov-kir/mindy.git

@@ -30,10 +30,17 @@ function prepareModule({ modulePath, preparedModuleFolders, packageManager }) {
     },
   });
 
-  preparedModuleFolders.forEach(({ moduleTakeawayPath, localPreparedModuleFolderName }) => {
+  preparedModuleFolders.forEach(({ moduleTakeawayPath, localPreparedModuleFolderName, copyFilter }) => {
     console.log('Replacing the old prepared module with the new prepared module of', localPreparedModuleFolderName);
     fse.copySync(moduleTakeawayPath, path.join(preparedModulesPath, localPreparedModuleFolderName), {
       overwrite: true,
+      filter: (src) => {
+        if (!copyFilter) {
+          return true;
+        }
+
+        return copyFilter(src);
+      },
     });
   });
 }
