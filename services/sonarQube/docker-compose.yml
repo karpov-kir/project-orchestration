@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  sonarqube:
+    image: mc1arke/sonarqube-with-community-branch-plugin:9.9-community
+    restart: unless-stopped
+    ports:
+      - 9000:9000
+    environment:
+      SONAR_JDBC_URL: jdbc:postgresql://postgres:5432/sonarqube
+      SONAR_JDBC_USERNAME: admin
+      SONAR_JDBC_PASSWORD: password
+    links: 
+      - postgres
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: sonarqube
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    expose:
+      - 5432

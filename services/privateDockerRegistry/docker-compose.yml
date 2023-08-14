@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  registry-ui:
+    image: joxit/docker-registry-ui:2
+    restart: unless-stopped
+    ports:
+      - 5100:80
+    environment:
+      REGISTRY_URL: https://dr.k-k.io
+  registry-server:
+    image: registry:2
+    restart: unless-stopped
+    ports:
+      - 5000:5000
+    environment:
+      REGISTRY_AUTH: htpasswd
+      REGISTRY_AUTH_HTPASSWD_REALM: Registry
+      REGISTRY_AUTH_HTPASSWD_PATH: /auth/registry.password
+      REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /registry-data
+      REGISTRY_STORAGE_DELETE_ENABLED: true
+      REGISTRY_HTTP_HEADERS_Access-Control-Allow-Origin: '[https://docker.k-k.io]'
+      REGISTRY_HTTP_HEADERS_Access-Control-Allow-Credentials: '[true]'
+      REGISTRY_HTTP_HEADERS_Access-Control-Allow-Headers: '[Authorization,Accept,Cache-Control]'
+    volumes:
+      - ./auth:/auth
+      - ./data:/registry-data
