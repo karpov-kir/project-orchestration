@@ -72,7 +72,7 @@ Use the `admin` user for all later steps.
     - `ln -s /home/admin/k-k.io/systemdServices/privateDockerRegistry.service ~/.config/systemd/user`
     - `ln -s /home/admin/k-k.io/systemdServices/sites.service ~/.config/systemd/user`
     - `ln -s /home/admin/k-k.io/systemdServices/sonarQube.service ~/.config/systemd/user`
-      - `sysctl -w vm.max_map_count=262144` (required for SonarQube systemd service)
+      - Add `vm.max_map_count=262144` to the end of `/etc/sysctl.conf` (required for SonarQube)
   - Start the services
     - `systemctl --user start sonarQube.service`
     - `systemctl --user start privateDockerRegistry.service`
