@@ -6,7 +6,7 @@ services:
     restart: unless-stopped
     ports:
       - 3020:80
-  
+
   guessir-backend:
     image: dr.k-k.io/guessir-backend
     restart: unless-stopped
@@ -18,7 +18,7 @@ services:
       DB_USER: admin
       DB_PW: password
       DB_HOST: postgres
-    links: 
+    links:
       - postgres
 
   postgres:
@@ -31,3 +31,5 @@ services:
       - ./data:/var/lib/postgresql/data
     expose:
       - 5432
+    ports:
+      - 5435:5432
