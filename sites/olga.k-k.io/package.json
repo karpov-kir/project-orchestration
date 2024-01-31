@@ -11,9 +11,9 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build:docker": "docker build -t olga.k-k.io .",
+    "build:docker": "docker build -t o-k.pro .",
     "build:next": "next build",
-    "publish:docker": "docker tag olga.k-k.io dr.k-k.io/olga.k-k.io && docker push dr.k-k.io/olga.k-k.io"
+    "publish:docker": "docker tag o-k.pro dr.k-k.pro/o-k.pro && docker push dr.k-k.pro/o-k.pro"
   },
   "dependencies": {
     "@fisch0920/use-dark-mode": "^2.4.0",

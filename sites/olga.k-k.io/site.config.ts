@@ -10,7 +10,7 @@ export default siteConfig({
 
   // basic site info (required)
   name: 'Designer Olga Karpova',
-  domain: 'olga.k-k.io',
+  domain: 'o-k.pro',
   author: 'Olga Karpova',
 
   // open graph metadata (optional)

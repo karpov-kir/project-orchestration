@@ -4,7 +4,7 @@ Description=privateDockerRegistry
 After=network.target
 
 [Service]
-WorkingDirectory=/home/admin/k-k.io/services/privateDockerRegistry
+WorkingDirectory=/home/admin/k-k.pro/services/privateDockerRegistry
 ExecStart=docker compose up
 Restart=always
 RestartSec=5s

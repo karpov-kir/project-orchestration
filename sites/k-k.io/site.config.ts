@@ -10,7 +10,7 @@ export default siteConfig({
 
   // basic site info (required)
   name: 'Software engineer Kirill Karpov',
-  domain: 'k-k.io',
+  domain: 'k-k.pro',
   author: 'Kirill Karpov',
 
   // open graph metadata (optional)

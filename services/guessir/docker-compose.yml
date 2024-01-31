@@ -2,13 +2,13 @@ version: '3'
 
 services:
   guessir-web:
-    image: dr.k-k.io/guessir-web
+    image: dr.k-k.pro/guessir-web
     restart: unless-stopped
     ports:
       - 3020:80
 
   guessir-backend:
-    image: dr.k-k.io/guessir-backend
+    image: dr.k-k.pro/guessir-backend
     restart: unless-stopped
     ports:
       - 3030:3020

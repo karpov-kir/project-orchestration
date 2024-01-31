@@ -4,7 +4,7 @@ Description=sites
 After=network.target
 
 [Service]
-WorkingDirectory=/home/admin/k-k.io/services/sites
+WorkingDirectory=/home/admin/k-k.pro/services/sites
 ExecStart=docker compose up
 Restart=always
 RestartSec=5s

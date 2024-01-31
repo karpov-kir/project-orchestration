@@ -4,7 +4,7 @@ Description=sonarQube
 After=network.target
 
 [Service]
-WorkingDirectory=/home/admin/k-k.io/services/sonarQube
+WorkingDirectory=/home/admin/k-k.pro/services/sonarQube
 ExecStart=docker compose up
 Restart=always
 RestartSec=5s

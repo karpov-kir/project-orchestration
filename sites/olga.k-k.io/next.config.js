@@ -15,8 +15,8 @@ module.exports = withBundleAnalyzer({
       'abs.twimg.com',
       's3.us-west-2.amazonaws.com',
       'transitivebullsh.it',
-      'k-k.io',
-      'olga.k-k.io'
+      'k-k.pro',
+      'o-k.pro'
     ],
     formats: ['image/avif', 'image/webp'],
     dangerouslyAllowSVG: true,

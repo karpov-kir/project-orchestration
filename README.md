@@ -44,19 +44,22 @@ Use the `admin` user for all later steps.
 
 - Upgrade `sudo apt update && apt upgrade`
 - Install GIT `sudo apt install git`
-  - Clone this repo to a folder `cd ~ && git clone https://github.com/karpov-kir/k-k.io.git`
+  - Clone this repo to a folder `cd ~ && git clone https://github.com/karpov-kir/k-k.pro.git`
 - Install Nginx
   - `sudo apt install nginx`
   - Add the Nginx config to the enabled sites
-    - `sudo ln -s /home/admin/k-k.io/nginx-k-k.io.conf /etc/nginx/sites-enabled/`
+    - `sudo ln -s /home/admin/k-k.pro/nginx-k-k.pro.conf /etc/nginx/sites-enabled/`
   - Reload Nginx `sudo nginx -s reload`
 - Install Docker
   - Follow steps in https://docs.docker.com/engine/install/ubuntu
   - Add the `admin` user to the Docker group to allow using it without sudo `sudo usermod -aG docker admin`
     - Close console and connect again
+  - Make Docker not overrule the firewall (refer to https://chjdev.com/2016/06/08/docker-ufw and https://askubuntu.com/a/857811)
+    - `sudo touch /etc/docker/daemon.json`
+    - Add `{ "iptables": false, "userland-proxy": true }` to `/etc/docker/daemon.json`
 - Set up login/password for private Docker registry (https://earthly.dev/blog/private-docker-registry)
-  - `mkdir ~/k-k.io/services/privateDockerRegistry/auth`
-  - `cd ~/k-k.io/services/privateDockerRegistry/auth`
+  - `mkdir ~/k-k.pro/services/privateDockerRegistry/auth`
+  - `cd ~/k-k.pro/services/privateDockerRegistry/auth`
   - `htpasswd -Bc registry.password admin`
 - Configure UFW (Firewall)
   - There are some prebuilt configs in `ls /etc/ufw/applications.d/`, also can be checked with `ufw app list`
@@ -68,15 +71,15 @@ Use the `admin` user for all later steps.
 - Configure `systemctl` to start the services
   - Add the units to the `systemd` folder
     - `mkdir -m 755 -p ~/.config/systemd/user`
-    - `ln -s /home/admin/k-k.io/systemdServices/guessir.service ~/.config/systemd/user`
-    - `ln -s /home/admin/k-k.io/systemdServices/privateDockerRegistry.service ~/.config/systemd/user`
-    - `ln -s /home/admin/k-k.io/systemdServices/sites.service ~/.config/systemd/user`
-    - `ln -s /home/admin/k-k.io/systemdServices/sonarQube.service ~/.config/systemd/user`
+    - `ln -s /home/admin/k-k.pro/systemdServices/guessir.service ~/.config/systemd/user`
+    - `ln -s /home/admin/k-k.pro/systemdServices/privateDockerRegistry.service ~/.config/systemd/user`
+    - `ln -s /home/admin/k-k.pro/systemdServices/sites.service ~/.config/systemd/user`
+    - `ln -s /home/admin/k-k.pro/systemdServices/sonarQube.service ~/.config/systemd/user`
       - Add `vm.max_map_count=262144` to the end of `/etc/sysctl.conf` (required for SonarQube)
   - Start the services
     - `systemctl --user start sonarQube.service`
     - `systemctl --user start privateDockerRegistry.service`
-      - Log in the server to the registry so it can access images: `docker login https://dr.k-k.io` and use `admin` as login and the password you've used within the previous steps
+      - Log in the server to the registry so it can access images: `docker login https://dr.k-k.pro` and use `admin` as login and the password you've used within the previous steps
       - Make sure all images are published before starting the next services
     - `systemctl --user start guessir.service`
     - `systemctl --user start sites.service`
