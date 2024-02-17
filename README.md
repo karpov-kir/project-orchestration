@@ -54,9 +54,6 @@ Use the `admin` user for all later steps.
   - Follow steps in https://docs.docker.com/engine/install/ubuntu
   - Add the `admin` user to the Docker group to allow using it without sudo `sudo usermod -aG docker admin`
     - Close console and connect again
-  - Make Docker not overrule the firewall (refer to https://chjdev.com/2016/06/08/docker-ufw and https://askubuntu.com/a/857811)
-    - `sudo touch /etc/docker/daemon.json`
-    - Add `{ "iptables": false, "userland-proxy": true }` to `/etc/docker/daemon.json`
 - Set up login/password for private Docker registry (https://earthly.dev/blog/private-docker-registry)
   - `mkdir ~/k-k.pro/services/privateDockerRegistry/auth`
   - `cd ~/k-k.pro/services/privateDockerRegistry/auth`

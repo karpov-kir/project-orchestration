@@ -5,14 +5,14 @@ services:
     image: joxit/docker-registry-ui:2
     restart: unless-stopped
     ports:
-      - 5100:80
+      - 127.0.0.1:5100:80
     environment:
       REGISTRY_URL: https://dr.k-k.pro
   registry-server:
     image: registry:2
     restart: unless-stopped
     ports:
-      - 5000:5000
+      - 127.0.0.1:5000:5000
     environment:
       REGISTRY_AUTH: htpasswd
       REGISTRY_AUTH_HTPASSWD_REALM: Registry

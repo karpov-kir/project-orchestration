@@ -5,9 +5,9 @@ services:
     image: dr.k-k.pro/k-k.pro
     restart: unless-stopped
     ports:
-      - 3000:3000
+      - 127.0.0.1:3000:3000
   o-k-pro:
     image: dr.k-k.pro/o-k.pro
     restart: unless-stopped
     ports:
-      - 3010:3000
+      - 127.0.0.1:3010:3000
