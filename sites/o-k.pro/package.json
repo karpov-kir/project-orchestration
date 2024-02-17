@@ -3,13 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build:docker": "docker build -t o-k.pro .",
+    "build:docker": "docker build --platform=linux/amd64 -t o-k.pro .",
     "build:next": "next build",
-    "dev": "next dev",
     "lint": "eslint \"**/*.@(ts|tsx|mts|js|jsx|cjs|mjs)\"",
     "lint:fix": "npm run lint -- --fix",
     "publish:docker": "docker tag o-k.pro dr.k-k.pro/o-k.pro && docker push dr.k-k.pro/o-k.pro",
-    "start": "next start"
+    "start": "next start",
+    "start:dev": "next dev"
   },
   "dependencies": {
     "next": "14.1.0",
