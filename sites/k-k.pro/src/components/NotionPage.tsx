@@ -30,6 +30,7 @@ export const NotionPage = ({ recordMap }: { recordMap: ExtendedRecordMap }) => {
           Collection,
           Modal,
         }}
+        disableHeader={true}
 
         // NOTE: custom images will only take effect if previewImages is true and
         // if the image has a valid preview image defined in recordMap.preview_images[src]
