@@ -6,6 +6,11 @@ services:
     restart: unless-stopped
     ports:
       - 127.0.0.1:3000:3000
+  blog-k-k-pro:
+    image: dr.k-k.pro/blog.o-k.pro
+    restart: unless-stopped
+    ports:
+      - 127.0.0.1:3040:3000
   o-k-pro:
     image: dr.k-k.pro/o-k.pro
     restart: unless-stopped

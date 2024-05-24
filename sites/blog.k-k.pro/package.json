@@ -1,13 +1,13 @@
 {
-  "name": "portfolio",
+  "name": "blog",
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build:docker": "docker build --platform=linux/amd64 -t o-k.pro .",
+    "build:docker": "docker build --platform=linux/amd64 -t blog.k-k.pro .",
     "build:next": "next build",
     "lint": "eslint \"**/*.@(ts|tsx|mts|js|jsx|cjs|mjs)\"",
     "lint:fix": "npm run lint -- --fix",
-    "publish:docker": "docker tag o-k.pro dr.k-k.pro/o-k.pro && docker push dr.k-k.pro/o-k.pro",
+    "publish:docker": "docker tag blog.k-k.pro dr.k-k.pro/blog.k-k.pro && docker push dr.k-k.pro/blog.k-k.pro",
     "start": "next start",
     "start:dev": "next dev"
   },
