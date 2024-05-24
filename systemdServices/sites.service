@@ -5,7 +5,9 @@ After=network.target
 
 [Service]
 WorkingDirectory=/home/admin/k-k.pro/services/sites
+ExecStartPre=docker compose pull
 ExecStart=docker compose up
+ExecStartPost=docker compose rm
 Restart=always
 RestartSec=5s
 # The app won't try and fork itself to drop user privileges or anything like that

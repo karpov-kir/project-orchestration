@@ -111,3 +111,6 @@ Optional:
   - `sudo chown -R www-data:www-data /home/www-data`
   - `sudo cp -r /home/admin/<staticFolder> /home/www-data`
   - `sudo chown -R www-data:www-data /home/www-data/<staticFolder>`
+- If service files are updated
+  - `systemctl --user daemon-reload`
+  - `systemctl --user restart <serviceName>.service`
