@@ -25,7 +25,7 @@ At least the following configuration is required:
 Use the `root` user for the following steps.
 
 - Add an `admin` user
-  - `adduser admin`
+  - `adduser admin` (all answers can be empty)
   - Setup SSH access
     - `mkdir 700 -p /home/admin/.ssh/`
     - `echo "<publicSshKey>" >> /home/admin/.ssh/authorized_keys`
@@ -42,7 +42,7 @@ Use the `root` user for the following steps.
 
 Use the `admin` user for all later steps.
 
-- Upgrade `sudo apt update && apt upgrade`
+- Upgrade `sudo apt update && sudo apt upgrade`
 - Install GIT `sudo apt install git`
   - Clone this repo to a folder `cd ~ && git clone https://github.com/karpov-kir/k-k.pro.git`
 - Install Nginx
@@ -53,10 +53,11 @@ Use the `admin` user for all later steps.
 - Install Docker
   - Follow steps in https://docs.docker.com/engine/install/ubuntu
   - Add the `admin` user to the Docker group to allow using it without sudo `sudo usermod -aG docker admin`
-    - Close console and connect again
+    - Reboot the server to apply the changes, otherwise the `systemctl` won't have access to the Docker daemon
 - Set up login/password for private Docker registry (https://earthly.dev/blog/private-docker-registry)
   - `mkdir ~/k-k.pro/services/privateDockerRegistry/auth`
   - `cd ~/k-k.pro/services/privateDockerRegistry/auth`
+  - `sudo apt install apache2-utils`
   - `htpasswd -Bc registry.password admin`
 - Configure UFW (Firewall)
   - There are some prebuilt configs in `ls /etc/ufw/applications.d/`, also can be checked with `ufw app list`
@@ -73,7 +74,7 @@ Use the `admin` user for all later steps.
     - `ln -s /home/admin/k-k.pro/systemdServices/sites.service ~/.config/systemd/user`
     - `ln -s /home/admin/k-k.pro/systemdServices/sonarQube.service ~/.config/systemd/user`
       - Add `vm.max_map_count=262144` to the end of `/etc/sysctl.conf` (required for SonarQube)
-  - Start the services
+  - Start the services (it may take some time to download the images for the first time)
     - `systemctl --user start sonarQube.service`
     - `systemctl --user start privateDockerRegistry.service`
       - Log in the server to the registry so it can access images: `docker login https://dr.k-k.pro` and use `admin` as login and the password you've used within the previous steps
