@@ -43,7 +43,7 @@ Use the `root` user for the following steps.
 Use the `admin` user for all later steps.
 
 - Upgrade `sudo apt update && sudo apt upgrade`
-- Install GIT `sudo apt install git`
+- Install Git `sudo apt install git`
   - Clone this repo to a folder `cd ~ && git clone https://github.com/karpov-kir/k-k.pro.git`
 - Install Nginx
   - `sudo apt install nginx`
