@@ -13,7 +13,15 @@ const Collection = dynamic(() => import('react-notion-x/build/third-party/collec
 const Modal = dynamic(() => import('react-notion-x/build/third-party/modal').then((m) => m.Modal), {
   ssr: false,
 });
-const Code = dynamic(() => import('react-notion-x/build/third-party/code').then((m) => m.Code));
+const Code = dynamic(() =>
+  import('react-notion-x/build/third-party/code').then(async (m) => {
+    // Additional prism syntaxes
+    const syntaxes = ['go', 'sql', 'yaml', 'docker', 'bash', 'lua', 'perl'];
+    await Promise.all(syntaxes.map((syntax) => import(`prismjs/components/prism-${syntax}.js`)));
+
+    return m.Code;
+  }),
+);
 
 export const NotionPage = ({ recordMap }: { recordMap: ExtendedRecordMap }) => {
   return (
