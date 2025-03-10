@@ -1,0 +1,217 @@
+services:
+  # docx-to-pdf:
+  #   image: dr.kk-forge.com/docx-to-pdf
+  #   networks:
+  #     - traefik_network
+  #   environment:
+  #     - pool.size=4
+
+  gotenberg:
+    image: gotenberg/gotenberg:8
+    command:
+      - "gotenberg"
+      - "--libreoffice-restart-after=10"
+      - "--libreoffice-max-queue-size=20"
+      - "--api-timeout=5m"
+    networks:
+      - traefik_network
+    deploy:
+      replicas: 4
+      resources:
+        limits:
+          memory: 1G
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.services.word-to-pdf-gotenberg.loadbalancer.server.port=3000"
+        - "traefik.http.routers.word-to-pdf-gotenberg.rule=Host(`traefik`) && PathPrefix(`/word-to-pdf-gotenberg`)"
+        - "traefik.http.routers.word-to-pdf-gotenberg.entrypoints=web-internal"
+
+        - "traefik.http.middlewares.word-to-pdf-gotenberg-prefix.stripprefix.prefixes=/word-to-pdf-gotenberg"
+        - "traefik.http.routers.word-to-pdf-gotenberg.middlewares=word-to-pdf-gotenberg-prefix"
+  
+  rate-limiter:
+    image: dr.kk-forge.com/rate-limiter
+    networks:
+      - traefik_network
+    environment:
+      USE_STRUCTURED_LOGGING: "true"
+      # LOG_LEVEL: "debug"
+      RATE_LIMIT: |
+          [
+            {
+              "host": "word-to-pdf-api-staging.kk-forge.com",
+              "path": "/convert-requests/convert",
+              "limit": 10,
+              "duration": "5m",
+              "method": "POST"
+            },
+            {
+              "host": "word-to-pdf-api-staging.kk-forge.com",
+              "path": "/convert-requests/batch",
+              "limit": 10,
+              "duration": "5m",
+              "method": "POST"
+            },
+            {
+              "host": "word-to-pdf-api.kk-forge.com",
+              "path": "/convert-requests/create",
+              "limit": 100,
+              "duration": "1h",
+              "method": "POST"
+            },
+            {
+              "host": "word-to-pdf-api.kk-forge.com",
+              "path": "/convert-requests/batch",
+              "limit": 100,
+              "duration": "1h",
+              "method": "POST"
+            }
+          ]
+
+  db:
+    image: postgres:17
+    networks:
+      - traefik_network
+    environment:
+      POSTGRES_USER: "admin"
+      POSTGRES_PASSWORD: "password"
+      POSTGRES_DB: "word-to-pdf"
+    healthcheck:
+      test: [
+        "CMD-SHELL", 
+        "pg_isready -U admin -d word-to-pdf",
+        "pg_isready -U admin -d word-to-pdf-staging"
+      ]
+      interval: 1s
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./init-multiple-dbs.sh:/docker-entrypoint-initdb.d/init-multiple-dbs.sh
+
+  reverse-proxy:
+    image: "nginx:1"
+    volumes:
+      - "./errorPages:/etc/nginx/word-to-pdf/error-pages"
+      - "./nginx-default.conf:/etc/nginx/conf.d/default.conf"
+      - "./nginx-cors.conf:/etc/nginx/word-to-pdf/nginx-cors.conf"
+      - "./nginx-errors.conf:/etc/nginx/word-to-pdf/nginx-errors.conf"
+    networks:
+      - traefik_network
+    depends_on:
+      - word-to-pdf
+      - word-to-pdf-staging
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.services.word-to-pdf-reverse-proxy.loadbalancer.server.port=80"
+
+        - "traefik.http.middlewares.word-to-pdf-error-handler.errors.status=413,429,500"
+        - "traefik.http.middlewares.word-to-pdf-error-handler.errors.service=word-to-pdf-reverse-proxy"
+        - "traefik.http.middlewares.word-to-pdf-error-handler.errors.query=/{status}.html"
+
+        # Staging
+        # 10 MB
+        - "traefik.http.middlewares.word-to-pdf-body-limit-staging.buffering.maxRequestBodyBytes=10485760"
+
+        - "traefik.http.middlewares.word-to-pdf-convert-rate-limit-staging.forwardauth.address=http://word-to-pdf_rate-limiter:3050"
+        - "traefik.http.middlewares.word-to-pdf-batch-rate-limit-staging.forwardauth.address=http://word-to-pdf_rate-limiter:3050"
+
+        - "traefik.http.routers.word-to-pdf-reverse-proxy-staging.rule=Host(`word-to-pdf-api-staging.kk-forge.com`)"
+        - "traefik.http.routers.word-to-pdf-reverse-proxy-staging.middlewares=word-to-pdf-error-handler"
+        - "traefik.http.routers.word-to-pdf-reverse-proxy-staging.entrypoints=websecure"
+        - "traefik.http.routers.word-to-pdf-reverse-proxy-staging.tls.certresolver=letsencrypt"
+
+        - "traefik.http.routers.word-to-pdf-convert-reverse-proxy-staging.rule=Host(`word-to-pdf-api-staging.kk-forge.com`) && Path(`/convert-requests/create`) && Method(`POST`)"
+        - "traefik.http.routers.word-to-pdf-convert-reverse-proxy-staging.middlewares=word-to-pdf-error-handler,word-to-pdf-convert-rate-limit-staging,word-to-pdf-body-limit-staging"
+        - "traefik.http.routers.word-to-pdf-convert-reverse-proxy-staging.entrypoints=websecure"
+        - "traefik.http.routers.word-to-pdf-convert-reverse-proxy-staging.tls.certresolver=letsencrypt"
+
+        - "traefik.http.routers.word-to-pdf-batch-reverse-proxy-staging.rule=Host(`word-to-pdf-api-staging.kk-forge.com`) && Path(`/batch-requests/create`) && Method(`POST`)"
+        - "traefik.http.routers.word-to-pdf-batch-reverse-proxy-staging.middlewares=word-to-pdf-error-handler,word-to-pdf-batch-rate-limit-staging,word-to-pdf-body-limit-staging"
+        - "traefik.http.routers.word-to-pdf-batch-reverse-proxy-staging.entrypoints=websecure"
+        - "traefik.http.routers.word-to-pdf-batch-reverse-proxy-staging.tls.certresolver=letsencrypt"
+
+        # Production
+        # 50 MiB
+        - "traefik.http.middlewares.word-to-pdf-body-limit.buffering.maxRequestBodyBytes=52428800"
+
+        - "traefik.http.middlewares.word-to-pdf-convert-rate-limit.forwardauth.address=http://word-to-pdf_rate-limiter:3050"
+        - "traefik.http.middlewares.word-to-pdf-batch-rate-limit.forwardauth.address=http://word-to-pdf_rate-limiter:3050"
+
+        - "traefik.http.routers.word-to-pdf-reverse-proxy.rule=Host(`word-to-pdf-api.kk-forge.com`)"
+        - "traefik.http.routers.word-to-pdf-reverse-proxy.middlewares=word-to-pdf-error-handler"
+        - "traefik.http.routers.word-to-pdf-reverse-proxy.entrypoints=websecure"
+        - "traefik.http.routers.word-to-pdf-reverse-proxy.tls.certresolver=letsencrypt"
+
+        - "traefik.http.routers.word-to-pdf-convert-reverse-proxy.rule=Host(`word-to-pdf-api.kk-forge.com`) && Path(`/convert-requests/create`) && Method(`POST`)"
+        - "traefik.http.routers.word-to-pdf-convert-reverse-proxy.middlewares=word-to-pdf-error-handler,word-to-pdf-convert-rate-limit,word-to-pdf-body-limit"
+        - "traefik.http.routers.word-to-pdf-convert-reverse-proxy.entrypoints=websecure"
+        - "traefik.http.routers.word-to-pdf-convert-reverse-proxy.tls.certresolver=letsencrypt"
+
+        - "traefik.http.routers.word-to-pdf-batch-reverse-proxy.rule=Host(`word-to-pdf-api.kk-forge.com`) && Path(`/batch-requests/create`) && Method(`POST`)"
+        - "traefik.http.routers.word-to-pdf-batch-reverse-proxy.middlewares=word-to-pdf-error-handler,word-to-pdf-batch-rate-limit,word-to-pdf-body-limit"
+        - "traefik.http.routers.word-to-pdf-batch-reverse-proxy.entrypoints=websecure"
+        - "traefik.http.routers.word-to-pdf-batch-reverse-proxy.tls.certresolver=letsencrypt"
+
+  word-to-pdf-staging:
+    image: dr.kk-forge.com/word-to-pdf
+    networks:
+      - traefik_network
+    depends_on:
+      - db
+    environment:
+      USE_STRUCTURED_LOGGING: "true"
+      DOC_TO_PDF_API_URL: "http://word-to-pdf_docx-to-pdf:8080"
+      GOTENBERG_API_URL: "http://traefik:8080/word-to-pdf-gotenberg"
+      POLL_QUEUED_CONVERT_REQUESTS_INTERVAL: "5s"
+      PARALLEL_CONVERT_LIMIT: "15"
+      POLL_BATCH_REQUESTS_INTERVAL: "5s"
+      PARALLEL_BATCH_LIMIT: "15"
+      DELETE_OLD_FILES_INTERVAL: "30s"
+      DELETE_OLD_FILES_THRESHOLD: "2m"
+      DATABASE_HOST: "word-to-pdf_db"
+      DATABASE_PORT: "5432"
+      DATABASE_USER: "admin"
+      DATABASE_PASSWORD: "password"
+      DATABASE_NAME: "word-to-pdf-staging"
+      MIGRATIONS_FOLDER_ABSOLUTE_PATH: "/migrations"
+      UPLOADS_FOLDER_ABSOLUTE_PATH: "/uploads"
+    deploy:
+      resources:
+        limits:
+          memory: 500M
+
+  word-to-pdf:
+    image: dr.kk-forge.com/word-to-pdf
+    networks:
+      - traefik_network
+    depends_on:
+      - db
+    environment:
+      USE_STRUCTURED_LOGGING: "true"
+      # LOG_LEVEL: "debug"
+      DOC_TO_PDF_API_URL: "http://docx-to-pdf:8080"
+      GOTENBERG_API_URL: "http://traefik:8080/word-to-pdf-gotenberg"
+      POLL_QUEUED_CONVERT_REQUESTS_INTERVAL: "1s"
+      PARALLEL_CONVERT_LIMIT: "20"
+      POLL_BATCH_REQUESTS_INTERVAL: "2s"
+      PARALLEL_BATCH_LIMIT: "20"
+      DELETE_OLD_FILES_INTERVAL: "10m"
+      DELETE_OLD_FILES_THRESHOLD: "1h"
+      DATABASE_HOST: "word-to-pdf_db"
+      DATABASE_PORT: "5432"
+      DATABASE_USER: "admin"
+      DATABASE_PASSWORD: "password"
+      DATABASE_NAME: "word-to-pdf"
+      MIGRATIONS_FOLDER_ABSOLUTE_PATH: "/migrations"
+      UPLOADS_FOLDER_ABSOLUTE_PATH: "/uploads"
+    deploy:
+      resources:
+        limits:
+          memory: 750M
+
+networks:
+  traefik_network:
+    external: true
+
+volumes:
+  db-data:

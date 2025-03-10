@@ -1,0 +1,17 @@
+services:
+  whoami:
+    image: "traefik/whoami"
+    networks:
+      - traefik_network
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.whoami.rule=Host(`whoami.kk-forge.com`)"
+        - "traefik.http.services.whoami.loadbalancer.server.port=80"
+        - "traefik.http.routers.whoami.entrypoints=websecure"
+        - "traefik.http.routers.whoami.tls.certresolver=letsencrypt"
+      replicas: 1
+
+networks:
+  traefik_network:
+    external: true

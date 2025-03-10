@@ -1,0 +1,16 @@
+version: '3'
+
+tasks:
+  install-tools:
+    cmds:
+      - GOBIN={{.TASKFILE_DIR}}/bin go install -v github.com/air-verse/air@v1
+  start:dev:
+    cmds:
+      - ./bin/air
+  build:docker:
+    cmds:
+      - docker build --platform=linux/amd64 -t rate-limiter .
+  publish:docker:
+    cmds:
+      - docker tag rate-limiter dr.kk-forge.com/rate-limiter && docker push dr.kk-forge.com/rate-limiter
+

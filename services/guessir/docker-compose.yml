@@ -1,35 +1,52 @@
-version: '3'
-
 services:
-  guessir-web:
-    image: dr.k-k.pro/guessir-web
-    restart: unless-stopped
-    ports:
-      - 127.0.0.1:3020:80
-
-  guessir-backend:
-    image: dr.k-k.pro/guessir-backend
-    restart: unless-stopped
-    ports:
-      - 127.0.0.1:3030:3020
+  web:
+    image: dr.kk-forge.com/guessir-web
+    networks:
+      - traefik_network
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.guessir-web.rule=Host(`guessir.kk-forge.com`)"
+        - "traefik.http.services.guessir-web.loadbalancer.server.port=80"
+        - "traefik.http.routers.guessir-web.entrypoints=websecure"
+        - "traefik.http.routers.guessir-web.tls.certresolver=letsencrypt"
+  backend:
+    image: dr.kk-forge.com/guessir-backend
+    networks:
+      - traefik_network
     environment:
-      DB: true
-      DB_NAME: guessir
-      DB_USER: admin
-      DB_PW: password
-      DB_HOST: postgres
-    links:
-      - postgres
+      DB: "true"
+      DB_NAME: "guessir"
+      DB_USER: "admin"
+      DB_PW: "password"
+      DB_HOST: "guessir_db"
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.guessir-backend.rule=Host(`guessir-api.kk-forge.com`)"
+        - "traefik.http.services.guessir-backend.loadbalancer.server.port=3020"
+        - "traefik.http.routers.guessir-backend.entrypoints=websecure"
+        - "traefik.http.routers.guessir-backend.tls.certresolver=letsencrypt"
+    depends_on:
+      - db
 
-  postgres:
+  db:
     image: postgres:15
+    networks:
+      - traefik_network
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: guessir
+      POSTGRES_USER: "admin"
+      POSTGRES_PASSWORD: "password"
+      POSTGRES_DB: "guessir"
     volumes:
-      - ./data:/var/lib/postgresql/data
-    expose:
-      - 5432
-    ports:
-      - 127.0.0.1:5435:5432
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d guessir"]
+      interval: 1s
+
+networks:
+  traefik_network:
+    external: true
+
+volumes:
+  db-data:

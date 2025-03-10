@@ -1,0 +1,24 @@
+/* stylelint-disable-next-line */
+@import "tailwindcss";
+
+
+/* stylelint-disable-next-line */
+@theme {
+  --breakpoint-xs: 30rem;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  min-height: 100%;
+}
+
+html {
+  font-family: 'Funnel Display', sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+/* stylelint-disable-next-line */
+@custom-variant light (&:where([data-theme="light"] *));

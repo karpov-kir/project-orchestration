@@ -1,0 +1,99 @@
+# Copied from https://github.com/swarmpit/swarmpit/blob/1.9/docker-compose.yml
+# What's changed:
+#  - Commented out the ports
+#  - Added the traefik labels
+#  - Used the right network and addresses
+version: '3.3'
+
+services:
+  app:
+    image: swarmpit/swarmpit:1.9
+    environment:
+      - SWARMPIT_DB=http://swarmpit_db:5984
+      - SWARMPIT_INFLUXDB=http://swarmpit_influxdb:8086
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    # ports:
+    #   - 888:8080
+    networks:
+      - traefik_network
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.swarmpit.rule=Host(`swarmpit.kk-forge.com`)"
+        - "traefik.http.services.swarmpit.loadbalancer.server.port=8080"
+        - "traefik.http.routers.swarmpit.entrypoints=websecure"
+        - "traefik.http.routers.swarmpit.tls.certresolver=letsencrypt"
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 1024M
+        reservations:
+          cpus: '0.25'
+          memory: 512M
+      placement:
+        constraints:
+          - node.role == manager
+
+  db:
+    image: couchdb:2.3.0
+    volumes:
+      - db-data:/opt/couchdb/data
+    networks:
+      - traefik_network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.30'
+          memory: 256M
+        reservations:
+          cpus: '0.15'
+          memory: 128M
+
+  influxdb:
+    image: influxdb:1.7
+    volumes:
+      - influx-data:/var/lib/influxdb
+    networks:
+      - traefik_network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.60'
+          memory: 512M
+        reservations:
+          cpus: '0.30'
+          memory: 128M
+
+  agent:
+    image: swarmpit/agent:2.2
+    environment:
+      - DOCKER_API_VERSION=1.35
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - traefik_network
+    deploy:
+      mode: global
+      labels:
+        swarmpit.agent: 'true'
+      resources:
+        limits:
+          cpus: '0.10'
+          memory: 64M
+        reservations:
+          cpus: '0.05'
+          memory: 32M
+
+# networks:
+#   net:
+#     driver: overlay
+#     attachable: true
+
+networks:
+  traefik_network:
+    external: true
+
+volumes:
+  db-data:
+  influx-data:

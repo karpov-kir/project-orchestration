@@ -1,24 +1,38 @@
-version: '3'
-
 services:
-  sonarqube:
-    image: mc1arke/sonarqube-with-community-branch-plugin:9.9-community
-    restart: unless-stopped
-    ports:
-      - 127.0.0.1:9000:9000
+  sq:
+    image: mc1arke/sonarqube-with-community-branch-plugin:24.12.0.100206-community
+    networks:
+      - traefik_network
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.sq.rule=Host(`sq.kk-forge.com`)"
+        - "traefik.http.services.sq.loadbalancer.server.port=9000"
+        - "traefik.http.routers.sq.entrypoints=websecure"
+        - "traefik.http.routers.sq.tls.certresolver=letsencrypt"
     environment:
-      SONAR_JDBC_URL: jdbc:postgresql://postgres:5432/sonarqube
-      SONAR_JDBC_USERNAME: admin
-      SONAR_JDBC_PASSWORD: password
-    links:
-      - postgres
-  postgres:
+      SONAR_JDBC_URL: "jdbc:postgresql://sonarqube_db:5432/sq"
+      SONAR_JDBC_USERNAME: "admin"
+      SONAR_JDBC_PASSWORD: "password"
+    depends_on:
+      - db
+  db:
     image: postgres:15
+    networks:
+      - traefik_network
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: sonarqube
+      POSTGRES_USER: "admin"
+      POSTGRES_PASSWORD: "password"
+      POSTGRES_DB: "sq"
     volumes:
-      - ./data:/var/lib/postgresql/data
-    expose:
-      - 5432
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d sq"]
+      interval: 1s
+
+networks:
+  traefik_network:
+    external: true
+
+volumes:
+  db-data:

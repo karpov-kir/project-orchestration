@@ -1,18 +1,39 @@
-version: '3'
-
 services:
   k-k-pro:
-    image: dr.k-k.pro/k-k.pro
-    restart: unless-stopped
-    ports:
-      - 127.0.0.1:3000:3000
+    image: dr.kk-forge.com/k-k.pro
+    networks:
+      - traefik_network
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.k-k-pro.rule=Host(`k-k.pro`)"
+        - "traefik.http.services.k-k-pro.loadbalancer.server.port=3000"
+        - "traefik.http.routers.k-k-pro.entrypoints=websecure"
+        - "traefik.http.routers.k-k-pro.tls.certresolver=letsencrypt"
   blog-k-k-pro:
-    image: dr.k-k.pro/blog.k-k.pro
-    restart: unless-stopped
-    ports:
-      - 127.0.0.1:3040:3000
-  o-k-pro:
-    image: dr.k-k.pro/o-k.pro
-    restart: unless-stopped
-    ports:
-      - 127.0.0.1:3010:3000
+    image: dr.kk-forge.com/blog.k-k.pro
+    networks:
+      - traefik_network
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.blog-k-k-pro.rule=Host(`blog.k-k.pro`)"
+        - "traefik.http.services.blog-k-k-pro.loadbalancer.server.port=3000"
+        - "traefik.http.routers.blog-k-k-pro.entrypoints=websecure"
+        - "traefik.http.routers.blog-k-k-pro.tls.certresolver=letsencrypt"
+
+  kk-forge-com:
+    image: dr.kk-forge.com/kk-forge.com
+    networks:
+      - traefik_network
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.kk-forge-com.rule=Host(`kk-forge.com`)"
+        - "traefik.http.services.kk-forge-com.loadbalancer.server.port=3000"
+        - "traefik.http.routers.kk-forge-com.entrypoints=websecure"
+        - "traefik.http.routers.kk-forge-com.tls.certresolver=letsencrypt"
+
+networks:
+  traefik_network:
+    external: true

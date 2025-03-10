@@ -1,0 +1,44 @@
+services:
+  ui:
+    image: joxit/docker-registry-ui:2
+    networks:
+      - traefik_network
+    environment:
+      REGISTRY_URL: https://dr.kk-forge.com
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.docker-registry-ui.rule=Host(`docker.kk-forge.com`)"
+        - "traefik.http.services.docker-registry-ui.loadbalancer.server.port=80"
+        - "traefik.http.routers.docker-registry-ui.entrypoints=websecure"
+        - "traefik.http.routers.docker-registry-ui.tls.certresolver=letsencrypt"
+  server:
+    image: registry:2
+    networks:
+      - traefik_network
+    environment:
+      REGISTRY_AUTH: htpasswd
+      REGISTRY_AUTH_HTPASSWD_REALM: Registry
+      REGISTRY_AUTH_HTPASSWD_PATH: /auth/registry.password
+      REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /registry-data
+      REGISTRY_STORAGE_DELETE_ENABLED: "true"
+      REGISTRY_HTTP_HEADERS_Access-Control-Allow-Origin: "[https://docker.kk-forge.com]"
+      REGISTRY_HTTP_HEADERS_Access-Control-Allow-Credentials: "[true]"
+      REGISTRY_HTTP_HEADERS_Access-Control-Allow-Headers: "[Authorization,Accept,Cache-Control]"
+    volumes:
+      - ./auth:/auth
+      - registry-data:/registry-data
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.docker-registry.rule=Host(`dr.kk-forge.com`)"
+        - "traefik.http.services.docker-registry.loadbalancer.server.port=5000"
+        - "traefik.http.routers.docker-registry.entrypoints=websecure"
+        - "traefik.http.routers.docker-registry.tls.certresolver=letsencrypt"
+
+networks:
+  traefik_network:
+    external: true
+
+volumes:
+  registry-data:

@@ -4,7 +4,11 @@
 *.orig
 *.DS_Store
 
-services/guessir/data
-services/privateDockerRegistry/auth
-services/privateDockerRegistry/data
-services/sonarQube/data
+services/dockerRegistry/auth
+services/reverseProxy/auth
+
+.vinxi
+.output
+node_modules
+.next
+tmp

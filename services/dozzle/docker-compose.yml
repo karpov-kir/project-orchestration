@@ -1,0 +1,22 @@
+services:
+  dozzle:
+    image: amir20/dozzle:v8
+    networks:
+      - traefik_network
+    environment:
+      - DOZZLE_MODE=swarm
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.dozzle.rule=Host(`dozzle.kk-forge.com`)"
+        - "traefik.http.routers.dozzle.middlewares=basic-auth@file"
+        - "traefik.http.services.dozzle.loadbalancer.server.port=8080"
+        - "traefik.http.routers.dozzle.entrypoints=websecure"
+        - "traefik.http.routers.dozzle.tls.certresolver=letsencrypt"
+      mode: global
+
+networks:
+  traefik_network:
+    external: true

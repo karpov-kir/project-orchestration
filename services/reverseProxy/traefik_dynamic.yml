@@ -1,0 +1,14 @@
+http:
+  middlewares:
+    basic-auth:
+      basicauth:
+        usersFile: "/etc/traefik/basic-auth.password"
+  routers:
+    traefik:
+      entryPoints: "websecure"
+      tls:
+        certresolver: "letsencrypt"
+      rule: "Host(`traefik.kk-forge.com`)"
+      service: api@internal
+      middlewares:
+        - basic-auth
