@@ -38,6 +38,20 @@ const googleTagScript = `
   window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'AW-16917618859');
 `;
 
+const yandexMetrikaScript = `
+   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+   m[i].l=1*new Date();
+   for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+   k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+   (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+   ym(100319861, "init", {
+        clickmap:true,
+        trackLinks:true,
+        accurateTrackBounce:true
+   });
+`;
+
 export default function App() {
   return (
     <Router
@@ -49,6 +63,8 @@ export default function App() {
           <script async src="https://www.googletagmanager.com/gtag/js?id=AW-16917618859" />
           {/* eslint-disable-next-line solid/no-innerhtml */}
           <script innerHTML={googleTagScript} />
+          {/* eslint-disable-next-line solid/no-innerhtml */}
+          <script innerHTML={yandexMetrikaScript} />
           <MetaLink rel="preconnect" href="https://fonts.googleapis.com" />
           <MetaLink rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
           <Link
@@ -57,6 +73,15 @@ export default function App() {
           />
           <Title>KK Forge</Title>
           <div class="bg-slate-950 light:bg-gray-100 transition-colors min-h-screen min-w-full">
+            <noscript>
+              <div>
+                <img
+                  src="https://mc.yandex.ru/watch/100319861"
+                  style={{ position: 'absolute', left: '-9999px' }}
+                  alt=""
+                />
+              </div>
+            </noscript>
             <Header />
             <main class="max-w-[1180px] py-20 px-6 mx-auto box-content max-md:px-4">
               <Suspense>{props.children}</Suspense>
