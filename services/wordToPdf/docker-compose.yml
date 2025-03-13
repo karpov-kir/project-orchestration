@@ -17,6 +17,15 @@ services:
       - traefik_network
     deploy:
       replicas: 4
+      # It was noticed that the gotenberg service stopped serving requests after a while.
+      # So we restart replicas of the service once a day.
+      update_config:
+        # Restart one replica at a time
+        parallelism: 1
+        # Wait some time before restarting the next one
+        delay: 60s
+        # Ensures a new instance starts before the old one stops
+        order: start-first
       resources:
         limits:
           memory: 1G
@@ -28,7 +37,14 @@ services:
 
         - "traefik.http.middlewares.word-to-pdf-gotenberg-prefix.stripprefix.prefixes=/word-to-pdf-gotenberg"
         - "traefik.http.routers.word-to-pdf-gotenberg.middlewares=word-to-pdf-gotenberg-prefix"
-  
+
+  gotenberg-restarter:
+    image: alpine:3
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: >
+      sh -c "echo '0 0 * * * docker service update --force word-to-pdf_gotenberg' | crontab - && crond -f -d 8"
+
   rate-limiter:
     image: dr.kk-forge.com/rate-limiter
     networks:
