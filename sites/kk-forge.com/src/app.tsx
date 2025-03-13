@@ -10,12 +10,11 @@ import { Link } from './components/Link';
 import { Switch } from './components/Switch';
 import MoonIcon from './icons/moon.svg?component-solid';
 import SunIcon from './icons/sun.svg?component-solid';
+import { isLightModeEnabled, setIsLightModeEnabled } from './isLightModeEnabled';
 
 const persistIsLightModeEnabled = (isLightModeEnabled: boolean) => {
   window.localStorage.setItem('isLightModeEnabled', JSON.stringify(isLightModeEnabled));
 };
-
-const [isLightModeEnabled, setIsLightModeEnabled] = createSignal(false);
 
 const updateDocumentDataTheme = (newIsLightModeEnabled: boolean) =>
   document.documentElement.setAttribute('data-theme', newIsLightModeEnabled ? 'light' : 'dark');
@@ -39,17 +38,17 @@ const googleTagScript = `
 `;
 
 const yandexMetrikaScript = `
-   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-   m[i].l=1*new Date();
-   for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-   k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
-   (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+  (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+  m[i].l=1*new Date();
+  for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+  k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+  (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
 
-   ym(100319861, "init", {
-        clickmap:true,
-        trackLinks:true,
-        accurateTrackBounce:true
-   });
+  ym(100319861, "init", {
+      clickmap:true,
+      trackLinks:true,
+      accurateTrackBounce:true
+  });
 `;
 
 export default function App() {
