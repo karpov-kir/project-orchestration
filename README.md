@@ -40,7 +40,7 @@ Use the `admin` user for all later steps.
   - `docker login`
 - Setup Docker Swarm
   - `docker swarm init --advertise-addr $(hostname -I | awk '{print $1}')`
-  - `docker network create --driver=overlay traefik_network`
+  - `docker network create --driver=overlay --attachable traefik_network`
 - Set up basic auth login/password
   - `sudo apt install apache2-utils`
   - Set up login/password for the private Docker registry (https://earthly.dev/blog/private-docker-registry)
@@ -83,3 +83,4 @@ Use the `admin` user for all later steps.
 - Get the running services using `docker service ls`
 - Check for startup errors using `docker service ps --no-trunc <service_name>`
 - Check the logs of the service using `docker service logs <service_name>`
+- Expose a port to the server's localhost only `docker run --rm --name socat -p 127.0.0.1:5432:5432 --network traefik_network --rm -it alpine/socat tcp-listen:5432,reuseaddr,fork tcp:word-to-pdf_db:5432` in order to connect to it over SSH tunneling
