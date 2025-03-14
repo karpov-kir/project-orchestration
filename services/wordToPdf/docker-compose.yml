@@ -39,7 +39,7 @@ services:
         - "traefik.http.routers.word-to-pdf-gotenberg.middlewares=word-to-pdf-gotenberg-prefix"
 
   gotenberg-restarter:
-    image: alpine:3
+    image: docker:28-cli
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     command: >
