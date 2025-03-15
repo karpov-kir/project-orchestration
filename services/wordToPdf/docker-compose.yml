@@ -7,7 +7,7 @@ services:
   #     - pool.size=4
 
   gotenberg:
-    image: gotenberg/gotenberg:8
+    image: dr.kk-forge.com/gotenberg
     command:
       - "gotenberg"
       - "--libreoffice-restart-after=10"
