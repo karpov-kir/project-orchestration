@@ -74,10 +74,16 @@ Use the `admin` user for all later steps.
   - `docker stack deploy --with-registry-auth -c ~/project-orchestration/services/swarmpit/docker-compose.yml swarmpit`
   - `docker stack deploy --with-registry-auth -c ~/project-orchestration/services/wordToPdf/docker-compose.yml word-to-pdf`
 
-## How to redeploy a service
+## How to make a service use the latest image
 
 - Build and publish a new image using `npm run build:docker && npm run publish:docker`
-- Update the affected services using `docker service update --with-registry-auth --force <service_name>`
+- Update the affected services using `docker service update --with-registry-auth --force <stackName>_<serviceName>`
+  - Or use the "Redeploy" action in the Swarmpit UI
+
+## How to update a service
+- Change the service's configuration in the `docker-compose.yml` file
+- Use `docker stack deploy --with-registry-auth -c ~/project-orchestration/services/<stackName>/docker-compose.yml <stackName>`
+  - Only the changed services will be updated
 
 ## Useful commands
 - Get the running services using `docker service ls`
